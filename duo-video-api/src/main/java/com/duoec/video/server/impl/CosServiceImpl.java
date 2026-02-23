@@ -3,6 +3,7 @@ package com.duoec.video.server.impl;
 import com.duoec.video.config.CosConfig;
 import com.duoec.video.server.CosService;
 import com.qcloud.cos.COSClient;
+import com.qcloud.cos.model.CannedAccessControlList;
 import com.qcloud.cos.model.PutObjectRequest;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
@@ -11,8 +12,6 @@ import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
 import org.springframework.stereotype.Service;
 
 import java.io.File;
-import java.net.URL;
-import java.util.Date;
 
 @Service
 @RequiredArgsConstructor
@@ -29,6 +28,7 @@ public class CosServiceImpl implements CosService {
         logger.info("上传文件到 COS: {} -> {}", file.getAbsolutePath(), fullKey);
 
         PutObjectRequest putRequest = new PutObjectRequest(cosConfig.getBucket(), fullKey, file);
+        putRequest.setCannedAcl(CannedAccessControlList.PublicRead);
         cosClient.putObject(putRequest);
 
         // 直接拼接公有读 URL（无签名，永久有效）
