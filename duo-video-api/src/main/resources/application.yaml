@@ -4,3 +4,13 @@ server:
 spring:
   application:
     name: duo_video
+
+# 腾讯云 COS 配置
+cos:
+  app-id: ${COS_APP_ID:}
+  secret-id: ${COS_SECRET_ID:}
+  secret-key: ${COS_SECRET_KEY:}
+  region: ${COS_REGION:ap-shanghai}
+  bucket: ${COS_BUCKET:}
+  key-prefix: jy-projects/
+  url-expiration: 1200

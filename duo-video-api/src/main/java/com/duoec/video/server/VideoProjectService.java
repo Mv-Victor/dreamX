@@ -83,4 +83,11 @@ public interface VideoProjectService {
      * @return 视频工程
      */
     VideoProject addSound(AddSoundRequest request);
+
+    /**
+     * 构建视频工程：生成剪映工程文件 → zip压缩 → 上传COS → 创建任务
+     * @param request 构建请求
+     * @return 任务ID
+     */
+    long buildProject(BuildProjectRequest request);
 }

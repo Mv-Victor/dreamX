@@ -3,12 +3,28 @@ package com.duoec.video.server.impl;
 import com.duoec.base.core.util.SnowflakeIdUtils;
 import com.duoec.video.builder.ProjectBuilder;
 import com.duoec.video.dto.request.*;
+import com.duoec.video.jy.JianyingBuilder;
+import com.duoec.video.jy.JianyingProjectBuildState;
 import com.duoec.video.project.VideoProject;
 import com.duoec.video.project.material.TextStyle;
+import com.duoec.video.server.CosService;
 import com.duoec.video.server.VideoProjectService;
 import com.duoec.video.server.VideoProjectStorageService;
-import lombok.RequiredArgsConstructor;
+import com.duoec.video.server.VideoTaskService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.util.stream.Stream;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipOutputStream;
 
 import java.util.Optional;
 
@@ -16,9 +32,24 @@ import java.util.Optional;
  * 视频工程服务实现类
  */
 @Service
-@RequiredArgsConstructor
 public class VideoProjectServiceImpl implements VideoProjectService {
+    private static final Logger logger = LoggerFactory.getLogger(VideoProjectServiceImpl.class);
+
     private final VideoProjectStorageService videoProjectStorageService;
+    private final JianyingBuilder jianyingBuilder;
+    private final VideoTaskService videoTaskService;
+    private CosService cosService;
+
+    @Autowired
+    public VideoProjectServiceImpl(VideoProjectStorageService videoProjectStorageService,
+                                   JianyingBuilder jianyingBuilder,
+                                   VideoTaskService videoTaskService,
+                                   @Autowired(required = false) CosService cosService) {
+        this.videoProjectStorageService = videoProjectStorageService;
+        this.jianyingBuilder = jianyingBuilder;
+        this.videoTaskService = videoTaskService;
+        this.cosService = cosService;
+    }
 
     @Override
     public VideoProject createProject(CreateProjectRequest request) {
@@ -428,6 +459,104 @@ public class VideoProjectServiceImpl implements VideoProjectService {
 
     private ProjectBuilder getProjectBuilder(long videoProjectId) {
         return ProjectBuilder.createProject(videoProjectStorageService.get(videoProjectId));
+    }
+
+    @Override
+    public long buildProject(BuildProjectRequest request) {
+        Long projectId = request.getProjectId();
+        logger.info("开始构建视频工程: {}", projectId);
+
+        // 1. 加载 VideoProject
+        VideoProject videoProject = videoProjectStorageService.get(projectId);
+        if (videoProject == null) {
+            throw new RuntimeException("视频工程不存在: " + projectId);
+        }
+
+        // 2. 调用 JianyingBuilder 生成剪映工程文件
+        jianyingBuilder.build(videoProject);
+
+        // 3. 获取工程目录并打 zip
+        boolean isTest = Optional.ofNullable(videoProject.getTest()).orElse(false);
+        String projectDirName = (videoProject.getProjectName() != null && !videoProject.getProjectName().isEmpty())
+                ? videoProject.getProjectName() : videoProject.getId().toString();
+
+        File projectDir;
+        if (isTest && JianyingProjectBuildState.DEBUG_JY_DRAFT_DIR != null) {
+            projectDir = new File(JianyingProjectBuildState.DEBUG_JY_DRAFT_DIR + projectDirName);
+        } else {
+            projectDir = new File("tmp/projects/" + projectId);
+        }
+
+        if (!projectDir.exists() || !projectDir.isDirectory()) {
+            throw new RuntimeException("剪映工程目录不存在: " + projectDir.getAbsolutePath());
+        }
+
+        File zipFile = new File(projectDir.getParentFile(), projectId + ".zip");
+        try {
+            zipDirectory(projectDir, zipFile);
+            logger.info("zip 压缩完成: {}", zipFile.getAbsolutePath());
+
+            String zipUrl;
+            if (isTest) {
+                // 测试模式：跳过 COS 上传，使用本地文件路径
+                zipUrl = "file://" + zipFile.getAbsolutePath();
+                logger.info("测试模式，跳过 COS 上传, 本地路径: {}", zipUrl);
+            } else {
+                // 4. 上传 zip 到 COS
+                if (cosService == null) {
+                    throw new RuntimeException("COS 服务未配置，无法上传");
+                }
+                String cosKey = projectId + "/" + projectId + ".zip";
+                zipUrl = cosService.upload(zipFile, cosKey);
+                logger.info("COS 上传完成: {}", zipUrl);
+            }
+
+            // 5. 创建视频任务
+            VideoTaskCreateRequest taskRequest = new VideoTaskCreateRequest();
+            taskRequest.setVideoId(request.getVideoId());
+            taskRequest.setPriority(Optional.ofNullable(request.getPriority()).orElse(1000));
+            taskRequest.setJyZipUrl(zipUrl);
+
+            long taskId = videoTaskService.addTask(taskRequest);
+            logger.info("视频任务创建成功, taskId: {}", taskId);
+
+            return taskId;
+        } catch (IOException e) {
+            throw new RuntimeException("构建视频工程失败: " + e.getMessage(), e);
+        } finally {
+            // 非测试模式下清理 zip 临时文件
+            if (!isTest && zipFile.exists()) {
+                zipFile.delete();
+            }
+        }
+    }
+
+    /**
+     * 将目录压缩为 zip 文件
+     */
+    private void zipDirectory(File sourceDir, File zipFile) throws IOException {
+        try (ZipOutputStream zos = new ZipOutputStream(new FileOutputStream(zipFile))) {
+            Path sourcePath = sourceDir.toPath();
+            try (Stream<Path> paths = Files.walk(sourcePath)) {
+                paths.filter(path -> !Files.isDirectory(path))
+                        .forEach(path -> {
+                            ZipEntry zipEntry = new ZipEntry(sourcePath.relativize(path).toString());
+                            try {
+                                zos.putNextEntry(zipEntry);
+                                try (FileInputStream fis = new FileInputStream(path.toFile())) {
+                                    byte[] buffer = new byte[8192];
+                                    int len;
+                                    while ((len = fis.read(buffer)) > 0) {
+                                        zos.write(buffer, 0, len);
+                                    }
+                                }
+                                zos.closeEntry();
+                            } catch (IOException e) {
+                                throw new RuntimeException("压缩文件失败: " + path, e);
+                            }
+                        });
+            }
+        }
     }
 }
 

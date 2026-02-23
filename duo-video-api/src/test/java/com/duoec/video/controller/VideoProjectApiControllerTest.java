@@ -6,7 +6,6 @@ import com.duoec.base.dto.response.BaseResponse;
 import com.duoec.video.dto.request.*;
 import com.duoec.video.jy.JianyingBuilder;
 import com.duoec.video.jy.JianyingProjectBuildState;
-import com.duoec.video.jy.dto.info.JianYingProjectInfo;
 import com.duoec.video.jy.service.impl.StorageServiceImpl;
 import com.duoec.video.project.VideoProject;
 import com.duoec.video.project.material.TextStyle;
@@ -35,7 +34,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 class VideoProjectApiControllerTest {
     static {
         JianyingBuilder.storageService = new StorageServiceImpl();
-        JianyingProjectBuildState.DEBUG_JY_DRAFT_DIR = "/Users/xuwenzhen/Movies/JianyingPro/User Data/Projects/com.lveditor.draft/";
+        JianyingProjectBuildState.DEBUG_JY_DRAFT_DIR = "/root/dreamX/tmp/jy-drafts/";
     }
 
     @Autowired
@@ -53,7 +52,7 @@ class VideoProjectApiControllerTest {
         createProjectRequest.setHeight(1920);
         createProjectRequest.setTest(true); // 设置为测试模式
 
-        MvcResult createResult = mockMvc.perform(post("/api/video")
+        MvcResult createResult = mockMvc.perform(post("/api/project")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(JsonUtils.toJsonString(createProjectRequest)))
                 .andExpect(status().isOk())
@@ -500,6 +499,23 @@ class VideoProjectApiControllerTest {
 
         System.out.println("\n✅ 所有API调用成功，视频项目构建完成！");
 
-        JianYingProjectInfo jyProject = new JianyingBuilder().build(finalProject);
+        // 15. 调用 build 接口：生成剪映工程文件 → zip → 上传COS → 创建任务
+        BuildProjectRequest buildRequest = new BuildProjectRequest();
+        buildRequest.setProjectId(projectId);
+        buildRequest.setVideoId(projectId);
+
+        MvcResult buildResult = mockMvc.perform(post("/api/project/build")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(JsonUtils.toJsonString(buildRequest)))
+                .andExpect(status().isOk())
+                .andReturn();
+
+        BaseResponse<Long> buildResponse = JsonUtils.toObject(
+                buildResult.getResponse().getContentAsString(),
+                new TypeReference<>() {}
+        );
+        assertEquals(0, buildResponse.getCode());
+        assertNotNull(buildResponse.getData());
+        System.out.println("15. 构建视频工程成功, taskId: " + buildResponse.getData());
     }
 }

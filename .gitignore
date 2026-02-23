@@ -49,4 +49,6 @@ auto-jy/auto-jy-mac/dist/
 auto-jy/auto-jy-mac/deploy/
 
 auto-jy/auto-jy-win/logs/
-auto-jy/auto-jy-win/__pycache__/
+auto-jy/auto-jy-win/__pycache__/logs/
+.env.cos
+duo-video-api/logs/

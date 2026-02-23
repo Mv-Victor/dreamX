@@ -17,7 +17,6 @@
           "time": { "start": 6000, "duration": 6000 },
           "materialId": 100102,
           "type": "image",
-          "refs": { "100501": "transition" },
           "zoom": { "x": 10000, "y": 10000 },
           "point": { "x": 0, "y": 0 }
         },
@@ -26,7 +25,6 @@
           "time": { "start": 12000, "duration": 6000 },
           "materialId": 100103,
           "type": "image",
-          "refs": { "100502": "transition" },
           "zoom": { "x": 10000, "y": 10000 },
           "point": { "x": 0, "y": 0 }
         },
@@ -35,7 +33,6 @@
           "time": { "start": 18000, "duration": 6000 },
           "materialId": 100104,
           "type": "image",
-          "refs": { "100503": "transition" },
           "zoom": { "x": 10000, "y": 10000 },
           "point": { "x": 0, "y": 0 }
         },
@@ -163,24 +160,6 @@
         "strokeColor": "#000000",
         "strokeWidth": 8
       }
-    },
-    {
-      "id": 100501,
-      "resourceId": 270404457990455297,
-      "duration": 500,
-      "type": "transition"
-    },
-    {
-      "id": 100502,
-      "resourceId": 270404457990455297,
-      "duration": 500,
-      "type": "transition"
-    },
-    {
-      "id": 100503,
-      "resourceId": 270404457990455297,
-      "duration": 500,
-      "type": "transition"
     }
   ],
   "width": 1080,

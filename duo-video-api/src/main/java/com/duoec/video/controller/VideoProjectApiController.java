@@ -225,13 +225,18 @@ public class VideoProjectApiController {
 
     /**
      * 构建视频
+     * 生成剪映工程文件 → zip压缩 → 上传COS → 创建视频任务
      * 返回视频构建任务ID，可使用此ID通过接口 GET /api/video-task/{taskId} 查询到构建任务的状态及进度
-     * @param project 视频工程
+     * @param request 构建请求
      * @return 视频构建任务ID
      */
     @PostMapping("/build")
-    public BaseResponse<Long> build(@RequestBody VideoProject project) {
+    public BaseResponse<Long> build(@RequestBody BuildProjectRequest request) {
+        if (request.getProjectId() == null) {
+            return BaseResponse.error("项目ID不能为空");
+        }
 
-        return BaseResponse.success();
+        long taskId = videoProjectService.buildProject(request);
+        return BaseResponse.success(taskId);
     }
 }

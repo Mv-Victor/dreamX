@@ -73,4 +73,14 @@ public class AddAudioRequest implements Serializable {
      * 音量（-100到100，0表示原音量）
      */
     private Integer volume;
+
+    /**
+     * 淡入时长（毫秒）
+     */
+    private Integer fadeInDuration;
+
+    /**
+     * 淡出时长（毫秒）
+     */
+    private Integer fadeOutDuration;
 }

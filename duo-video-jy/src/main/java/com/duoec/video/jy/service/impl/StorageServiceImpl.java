@@ -13,8 +13,10 @@ import org.springframework.stereotype.Service;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.InputStream;
+import java.net.URI;
 import java.net.URL;
 import java.net.URLConnection;
+import java.nio.file.Files;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
@@ -109,6 +111,19 @@ public class StorageServiceImpl implements StorageService {
     private void download(String url, File distFile, int retryCount) {
         File parentDir = distFile.getParentFile();
         FileUtils.mkdirs(parentDir);
+
+        // Handle file:// URLs directly
+        if (url.startsWith("file://")) {
+            try {
+                File srcFile = new File(URI.create(url));
+                Files.copy(srcFile.toPath(), distFile.toPath());
+                logger.info("{}，[FILE]复制完成", url);
+                return;
+            } catch (Exception e) {
+                logger.error("file:// 复制失败：{}", url, e);
+                throw new DuoServiceException("file:// 复制失败：" + url, e);
+            }
+        }
 
         long t = System.currentTimeMillis();
 
