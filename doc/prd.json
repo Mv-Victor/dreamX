@@ -25,8 +25,8 @@
         "支持一张图片配多句字幕的分镜格式"
       ],
       "priority": 2,
-      "passes": false,
-      "notes": ""
+      "passes": true,
+      "notes": "2026-02-24 完成。SKILL.md 已更新一图多句+情绪召回逻辑"
     },
     {
       "id": "DX-003",
@@ -40,8 +40,8 @@
         "上传 COS 返回下载链接"
       ],
       "priority": 3,
-      "passes": false,
-      "notes": ""
+      "passes": true,
+      "notes": "2026-02-24 完成。v2测试通过，COS链接已生成，已通知栋少"
     },
     {
       "id": "DX-004",

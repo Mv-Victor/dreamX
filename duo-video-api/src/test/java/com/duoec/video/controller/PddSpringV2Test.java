@@ -173,15 +173,9 @@ class PddSpringV2Test {
             callApi("/api/project/audio", vo, (9 + i) + ". 配音" + (i + 1));
         }
 
-        // 17-24. 添加8条字幕
+        // 17-24. 添加8条字幕（统一样式：FFDE00 + 黑色描边）
         for (int i = 0; i < 8; i++) {
-            String fillColor;
-            if (i < 2) fillColor = "#FF4444";      // hook: 红色
-            else if (i < 4) fillColor = "#FFDE00";  // 爆料: 黄色
-            else if (i < 6) fillColor = "#FF6B00";  // 利益点: 橙色
-            else fillColor = "#00FF88";              // 引导: 绿色
-
-            addSubtitle(SUBTITLES[i], subStart(i), SUB_DURATIONS[i], fillColor,
+            addSubtitle(SUBTITLES[i], subStart(i), SUB_DURATIONS[i],
                     (17 + i) + ". 字幕: " + SUBTITLES[i]);
         }
 
@@ -246,7 +240,7 @@ class PddSpringV2Test {
         callApi("/api/project/image", img, msg);
     }
 
-    private void addSubtitle(String text, long startTime, long duration, String fillColor, String msg) throws Exception {
+    private void addSubtitle(String text, long startTime, long duration, String msg) throws Exception {
         AddTextRequest textReq = new AddTextRequest();
         textReq.setProjectId(PROJECT_ID);
         textReq.setScriptIndex(0);
@@ -261,7 +255,7 @@ class PddSpringV2Test {
                 .setBold(true)
                 .setTextAlign(1)
                 .setFontName("抖音美好体")
-                .setFillColor(fillColor)
+                .setFillColor("#FFDE00")
                 .setStrokeColor("#000000")
                 .setStrokeWidth(60));
         callApi("/api/project/text", textReq, msg);
