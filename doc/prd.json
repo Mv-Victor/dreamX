@@ -1,0 +1,60 @@
+{
+  "project": "DreamX 智能剪辑",
+  "description": "AI 驱动的营销视频制作系统 - 素材库 + 情绪召回 + 剪映工程生成",
+  "userStories": [
+    {
+      "id": "DX-001",
+      "title": "素材爬取方案落地",
+      "description": "搭建 agent-browser + Giphy 表情包爬取 + Mixkit BGM 下载",
+      "acceptanceCriteria": [
+        "表情包 ≥ 100 个，覆盖 ≥ 10 个情绪分类",
+        "BGM ≥ 15 首，覆盖 ≥ 5 个风格",
+        "SQLite 数据库存储元数据 + 情绪标签"
+      ],
+      "priority": 1,
+      "passes": true,
+      "notes": "2026-02-24 完成。111 memes + 20 BGMs"
+    },
+    {
+      "id": "DX-002",
+      "title": "更新 SKILL.md 分镜逻辑",
+      "description": "更新 dreamx-smart-editing SKILL.md，支持一图多句字幕 + 情绪召回匹配",
+      "acceptanceCriteria": [
+        "SKILL.md 包含新的分镜逻辑说明",
+        "支持从 SQLite 按情绪标签召回表情包和 BGM",
+        "支持一张图片配多句字幕的分镜格式"
+      ],
+      "priority": 2,
+      "passes": false,
+      "notes": ""
+    },
+    {
+      "id": "DX-003",
+      "title": "重做 PDD 视频",
+      "description": "用新的情绪召回逻辑重做拼多多春季营销视频",
+      "acceptanceCriteria": [
+        "6-10 句爆款脚本",
+        "4 张图片分配多句字幕",
+        "情绪召回匹配表情包 + BGM",
+        "生成剪映工程文件",
+        "上传 COS 返回下载链接"
+      ],
+      "priority": 3,
+      "passes": false,
+      "notes": ""
+    },
+    {
+      "id": "DX-004",
+      "title": "素材库二轮扩充",
+      "description": "补充 shy 分类、中文梗图、更多 BGM 风格",
+      "acceptanceCriteria": [
+        "表情包 ≥ 200 个",
+        "BGM ≥ 30 首",
+        "每个情绪分类 ≥ 8 个素材"
+      ],
+      "priority": 4,
+      "passes": false,
+      "notes": ""
+    }
+  ]
+}

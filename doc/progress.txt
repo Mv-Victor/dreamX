@@ -1,0 +1,24 @@
+## Codebase Patterns
+- 表情包爬取用 agent-browser + Giphy（国内直连被墙）
+- BGM 下载用 Mixkit preview MP3 + Referer 头
+- 用 python3.12 运行爬取脚本（python3.11 缺依赖）
+- base64 中转 GIF 限制 3MB 以内
+- GitHub API (api.github.com) 从国内可以访问，git clone 不行
+- SQLite 数据库路径：/root/dreamX/doc/crawler/media_library.db
+- 素材路径：表情包 /root/dreamX/doc/memes/，BGM /root/dreamX/doc/bgm/
+---
+
+## 2026-02-24 11:00 - DX-001 素材爬取方案落地
+- 搭建 agent-browser + Giphy 表情包爬取
+- Mixkit preview MP3 直接下载 BGM
+- 创建 crawl_media.py v3（多协程，支持 agent-browser）
+- 结果：111 表情包 + 20 BGM，覆盖 15 个分类
+- Files: crawler/crawl_media.py, crawler/init_db.py, crawler/import_existing.py, crawler/status.py
+- **Learnings:**
+  - Giphy API / Tenor / Pixabay 全部被墙
+  - dbbqb.com SSL 证书过期
+  - FreePD 已关站
+  - Mixkit 直接下载 CloudFront 403，但 preview MP3 可用
+  - agent-browser 有独立浏览器环境，可绕过国内网络限制
+  - BGM 去重需注意 ID 格式不同（旧 comical vs 新 mixkit_466）
+---
