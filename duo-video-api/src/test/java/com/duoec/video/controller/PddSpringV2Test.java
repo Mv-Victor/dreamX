@@ -135,15 +135,13 @@ class PddSpringV2Test {
         createReq.setHeight(1920);
         callApi("/api/project", createReq, "1. 创建项目");
 
-        // 2-5. 添加4张图片
+        // 2-7. 图片+表情包（严格按分镜时间顺序穿插）
         addImage(200301L, SALE_PATH + "1.jpg", img1Start(), img1Duration(), "2. 图1 (hook)");
         addImage(200302L, SALE_PATH + "2.jpg", img2Start(), img2Duration(), "3. 图2 (爆料)");
-        addImage(200303L, SALE_PATH + "3.jpg", img3Start(), img3Duration(), "4. 图3 (利益点)");
-        addImage(200304L, SALE_PATH + "4.jpg", img4Start(), img4Duration(), "5. 图4 (引导)");
-
-        // 6-7. 添加2个表情包（作为图片 segment）
-        addImage(200311L, MEME_PATH + "shocked/shocked_2.gif", meme1Start(), MEME_DURATION, "6. 表情包-震惊");
-        addImage(200312L, MEME_PATH + "tired/tired_2.gif", meme2Start(), MEME_DURATION, "7. 表情包-加班累");
+        addImage(200311L, MEME_PATH + "shocked/shocked_2.gif", meme1Start(), MEME_DURATION, "4. 表情包-震惊");
+        addImage(200303L, SALE_PATH + "3.jpg", img3Start(), img3Duration(), "5. 图3 (利益点)");
+        addImage(200312L, MEME_PATH + "tired/tired_2.gif", meme2Start(), MEME_DURATION, "6. 表情包-加班累");
+        addImage(200304L, SALE_PATH + "4.jpg", img4Start(), img4Duration(), "7. 图4 (引导)");
 
         // 8. 添加背景音乐（召回的 comical.mp3）
         AddAudioRequest bgm = new AddAudioRequest();

@@ -65,9 +65,6 @@ public class ProjectTextBuilder extends BaseSegmentBuilder<TextMaterial, Project
         material = new TextMaterial();
         material.setId(SnowflakeIdUtils.nextTmpId());
         material.setText(text);
-        if (style != null) {
-            material.setStyle(style);
-        }
 
         videoTime = new VideoTimeRange(start, duration);
         videoPoint = new VideoPoint(0, 0);
@@ -107,6 +104,9 @@ public class ProjectTextBuilder extends BaseSegmentBuilder<TextMaterial, Project
 
     @Override
     protected void beforeBack() {
+        if (style != null) {
+            material.setStyle(style);
+        }
         if (styleId != null) {
             material.setStyleId(styleId);
         }
