@@ -52,3 +52,4 @@ auto-jy/auto-jy-win/logs/
 auto-jy/auto-jy-win/__pycache__/logs/
 .env.cos
 duo-video-api/logs/
+*.pyc

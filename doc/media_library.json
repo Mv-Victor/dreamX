@@ -1,0 +1,700 @@
+{
+  "version": 2,
+  "description": "DreamX 本地素材理解库 - BGM + 表情包索引（含角色/梗/波形）",
+  "lastUpdated": "2026-02-23",
+  "schema": {
+    "meme": {
+      "id": "唯一标识",
+      "file": "本地文件路径",
+      "source": "来源站点",
+      "sourceUrl": "原始链接",
+      "character": "角色名（如 cheems、逆转猫、质问猫）",
+      "characterIp": "所属IP（如 猫和老鼠、doge、万恶之源）",
+      "memeName": "梗名（如 逆转猫、质问猫）",
+      "memeDesc": "梗描述（这个表情包表达什么意思）",
+      "text": "表情包中的文字（如果有）",
+      "mood": [
+        "情绪标签"
+      ],
+      "tags": [
+        "主题标签"
+      ],
+      "format": "gif/jpg/png/webp",
+      "usedIn": [
+        "使用过的项目ID"
+      ]
+    },
+    "bgm": {
+      "id": "唯一标识",
+      "file": "本地文件路径",
+      "source": "来源站点",
+      "sourceId": "来源ID",
+      "title": "曲名",
+      "artist": "作者",
+      "duration": "总时长(秒)",
+      "mood": [
+        "情绪标签（与表情库一致）"
+      ],
+      "tags": [
+        "主题标签（与表情库一致）"
+      ],
+      "genre": "音乐类型",
+      "waveform": {
+        "peaks": "波形峰值数组（归一化0-1）",
+        "climaxRanges": [
+          {
+            "start": "高潮起始秒",
+            "end": "高潮结束秒",
+            "intensity": "强度0-1"
+          }
+        ],
+        "bpm": "节拍数"
+      },
+      "memeMatch": [
+        "适配的梗名/角色"
+      ],
+      "usedIn": [
+        "使用过的项目ID"
+      ]
+    }
+  },
+  "moodTaxonomy": {
+    "搞笑": {
+      "en": "funny",
+      "giphyKeywords": "funny laugh hilarious",
+      "relatedMemes": [
+        "cheems",
+        "逆转猫",
+        "颠笑猫"
+      ],
+      "relatedBgm": [
+        "comical",
+        "just_kidding"
+      ]
+    },
+    "震惊": {
+      "en": "shocked",
+      "giphyKeywords": "shocked surprised omg",
+      "relatedMemes": [
+        "震惊猫",
+        "质问猫"
+      ],
+      "relatedBgm": [
+        "upbeat_jazz"
+      ]
+    },
+    "离谱": {
+      "en": "unbelievable",
+      "giphyKeywords": "unbelievable wtf no-way",
+      "relatedMemes": [
+        "逆转猫",
+        "希特勒猫"
+      ],
+      "relatedBgm": [
+        "comical"
+      ]
+    },
+    "吐槽": {
+      "en": "complain",
+      "giphyKeywords": "complain rant facepalm",
+      "relatedMemes": [
+        "质问猫",
+        "紫啧猫"
+      ],
+      "relatedBgm": [
+        "upbeat_jazz"
+      ]
+    },
+    "委屈": {
+      "en": "aggrieved",
+      "giphyKeywords": "sad puppy eyes crying",
+      "relatedMemes": [
+        "委屈猫",
+        "哭泣猫",
+        "妈妈鼠"
+      ],
+      "relatedBgm": []
+    },
+    "害羞": {
+      "en": "shy",
+      "giphyKeywords": "shy blush cute",
+      "relatedMemes": [
+        "害羞猫"
+      ],
+      "relatedBgm": [
+        "feeling_happy"
+      ]
+    },
+    "愤怒": {
+      "en": "angry",
+      "giphyKeywords": "angry mad furious",
+      "relatedMemes": [
+        "跺脚猫",
+        "老吴猫"
+      ],
+      "relatedBgm": []
+    },
+    "欢快": {
+      "en": "happy",
+      "giphyKeywords": "happy excited celebration dance",
+      "relatedMemes": [
+        "颠笑猫"
+      ],
+      "relatedBgm": [
+        "feeling_happy",
+        "just_kidding"
+      ]
+    },
+    "无语": {
+      "en": "speechless",
+      "giphyKeywords": "speechless facepalm done",
+      "relatedMemes": [
+        "紫啧猫",
+        "外婆猫"
+      ],
+      "relatedBgm": [
+        "games_worldbeat"
+      ]
+    },
+    "可爱": {
+      "en": "cute",
+      "giphyKeywords": "cute adorable kawaii",
+      "relatedMemes": [
+        "胖狸猫",
+        "特辣的海藻"
+      ],
+      "relatedBgm": [
+        "feeling_happy"
+      ]
+    }
+  },
+  "characterRegistry": {
+    "cheems": {
+      "ip": "doge",
+      "desc": "柴犬cheems，经典网络梗狗，常用于自嘲和搞笑场景",
+      "searchKeywords": "cheems doge meme"
+    },
+    "逆转猫": {
+      "ip": "猫meme",
+      "desc": "猫咪突然回头的表情，表达剧情反转、出乎意料",
+      "searchKeywords": "cat reverse turn around meme"
+    },
+    "希特勒猫": {
+      "ip": "猫meme",
+      "desc": "嘴巴上方有黑色花纹像胡子的猫，表达严肃/搞笑反差",
+      "searchKeywords": "hitler cat mustache cat meme"
+    },
+    "质问猫": {
+      "ip": "猫meme",
+      "desc": "猫咪瞪大眼睛质问的表情，表达不满和质疑",
+      "searchKeywords": "angry cat stare questioning cat meme"
+    },
+    "委屈猫": {
+      "ip": "猫meme",
+      "desc": "猫咪泪眼汪汪的表情，表达委屈和无奈",
+      "searchKeywords": "crying cat sad cat meme"
+    },
+    "外婆猫": {
+      "ip": "猫meme",
+      "desc": "戴眼镜的老猫表情，表达无语和看不下去",
+      "searchKeywords": "grandma cat glasses cat meme"
+    },
+    "特辣的海藻": {
+      "ip": "猫meme",
+      "desc": "绿色海藻头猫咪，表达可爱和搞怪",
+      "searchKeywords": "seaweed cat green cat meme"
+    },
+    "胖狸猫": {
+      "ip": "狸猫",
+      "desc": "圆滚滚的狸猫，表达可爱和呆萌",
+      "searchKeywords": "fat raccoon cat chubby tanuki meme"
+    },
+    "震惊猫": {
+      "ip": "猫meme",
+      "desc": "猫咪张大嘴巴震惊的表情",
+      "searchKeywords": "shocked cat surprised cat open mouth meme"
+    },
+    "老吴猫": {
+      "ip": "猫meme",
+      "desc": "一脸不爽的猫，表达愤怒和不满",
+      "searchKeywords": "grumpy cat angry cat meme"
+    },
+    "哭泣猫": {
+      "ip": "猫meme",
+      "desc": "猫咪流泪的表情，表达悲伤",
+      "searchKeywords": "crying cat tears cat sad meme"
+    },
+    "硬啃猫": {
+      "ip": "猫meme",
+      "desc": "猫咪咬东西的表情，表达硬撑和倔强",
+      "searchKeywords": "biting cat chewing cat meme"
+    },
+    "妈妈鼠": {
+      "ip": "猫和老鼠",
+      "desc": "Tom and Jerry中的角色，表达委屈和无奈",
+      "searchKeywords": "tom and jerry mouse mom meme"
+    },
+    "紫啧猫": {
+      "ip": "猫meme",
+      "desc": "猫咪啧啧的表情，表达无语和嫌弃",
+      "searchKeywords": "disgusted cat tsk cat meme"
+    },
+    "害羞猫": {
+      "ip": "猫meme",
+      "desc": "猫咪害羞捂脸的表情",
+      "searchKeywords": "shy cat blushing cat hiding face meme"
+    },
+    "跺脚猫": {
+      "ip": "猫meme",
+      "desc": "猫咪跺脚生气的表情，表达愤怒",
+      "searchKeywords": "stomping cat angry cat tantrum meme"
+    },
+    "颠笑猫": {
+      "ip": "猫meme",
+      "desc": "猫咪疯狂大笑的表情，表达搞笑到不行",
+      "searchKeywords": "laughing cat crazy laugh cat meme"
+    },
+    "万恶之源猫": {
+      "ip": "万恶之源",
+      "desc": "经典猫咪表情包系列，各种夸张表情",
+      "searchKeywords": "cat meme viral original"
+    },
+    "tom猫": {
+      "ip": "猫和老鼠",
+      "desc": "Tom猫的各种经典表情",
+      "searchKeywords": "tom cat tom and jerry meme"
+    },
+    "jerry鼠": {
+      "ip": "猫和老鼠",
+      "desc": "Jerry鼠的各种经典表情",
+      "searchKeywords": "jerry mouse tom and jerry meme"
+    }
+  },
+  "bgm": {
+    "sources": {
+      "mixkit": {
+        "url": "https://mixkit.co/free-stock-music/",
+        "downloadPattern": "https://assets.mixkit.co/music/{id}/{id}.mp3",
+        "license": "Royalty Free, 免费商用, 无需署名",
+        "searchable": true,
+        "searchMethod": "agent-browser打开搜索页，提取data-download-ButtonModalUrlValue获取ID"
+      },
+      "aigei": {
+        "url": "https://www.aigei.com/music/",
+        "license": "CC协议(部分免费商用)",
+        "searchable": true,
+        "requiresLogin": true
+      },
+      "bensound": {
+        "url": "https://www.bensound.com/",
+        "license": "Free with attribution",
+        "searchable": true
+      },
+      "freepd": {
+        "url": "https://freepd.com/",
+        "license": "Public Domain",
+        "searchable": true
+      }
+    },
+    "library": [
+      {
+        "id": "comical",
+        "file": "/root/dreamX/doc/bgm/funny/comical.mp3",
+        "source": "mixkit",
+        "sourceId": 2,
+        "title": "Comical",
+        "artist": "Ahjay Stelino",
+        "duration": 114.5,
+        "mood": [
+          "搞笑",
+          "离谱",
+          "吐槽"
+        ],
+        "tags": [
+          "comedy",
+          "cartoon",
+          "playful",
+          "滑稽"
+        ],
+        "genre": "Children",
+        "waveform": {
+          "avgRms": -16.8,
+          "climaxRanges": [
+            {
+              "start": 33,
+              "end": 37,
+              "intensity": 0.75
+            },
+            {
+              "start": 42,
+              "end": 69,
+              "intensity": 0.48
+            },
+            {
+              "start": 97,
+              "end": 104,
+              "intensity": 0.66
+            },
+            {
+              "start": 105,
+              "end": 109,
+              "intensity": 0.73
+            }
+          ],
+          "bpm": null
+        },
+        "memeMatch": [
+          "逆转猫",
+          "颠笑猫",
+          "cheems"
+        ],
+        "usedIn": []
+      },
+      {
+        "id": "games_worldbeat",
+        "file": "/root/dreamX/doc/bgm/funny/games_worldbeat.mp3",
+        "source": "mixkit",
+        "sourceId": 466,
+        "title": "Games Worldbeat",
+        "artist": "Bernardo R.",
+        "duration": 106.6,
+        "mood": [
+          "搞笑",
+          "无语",
+          "离谱"
+        ],
+        "tags": [
+          "medieval",
+          "flute",
+          "cinematic",
+          "funny"
+        ],
+        "genre": "World",
+        "waveform": {
+          "avgRms": -17.0,
+          "climaxRanges": [
+            {
+              "start": 12,
+              "end": 17,
+              "intensity": 0.73
+            },
+            {
+              "start": 18,
+              "end": 23,
+              "intensity": 0.71
+            },
+            {
+              "start": 27,
+              "end": 33,
+              "intensity": 0.69
+            },
+            {
+              "start": 60,
+              "end": 63,
+              "intensity": 0.72
+            },
+            {
+              "start": 79,
+              "end": 82,
+              "intensity": 0.71
+            }
+          ],
+          "bpm": null
+        },
+        "memeMatch": [
+          "外婆猫",
+          "紫啧猫"
+        ],
+        "usedIn": []
+      },
+      {
+        "id": "just_kidding",
+        "file": "/root/dreamX/doc/bgm/funny/just_kidding.mp3",
+        "source": "mixkit",
+        "sourceId": 11,
+        "title": "Just Kidding",
+        "artist": "Ahjay Stelino",
+        "duration": 178.9,
+        "mood": [
+          "搞笑",
+          "欢快"
+        ],
+        "tags": [
+          "happy",
+          "humorous",
+          "comedy"
+        ],
+        "genre": "Children",
+        "waveform": {
+          "avgRms": -18.4,
+          "climaxRanges": [
+            {
+              "start": 102,
+              "end": 105,
+              "intensity": 0.74
+            },
+            {
+              "start": 162,
+              "end": 165,
+              "intensity": 0.72
+            },
+            {
+              "start": 166,
+              "end": 169,
+              "intensity": 0.68
+            },
+            {
+              "start": 170,
+              "end": 173,
+              "intensity": 0.72
+            }
+          ],
+          "bpm": null
+        },
+        "memeMatch": [
+          "颠笑猫",
+          "cheems"
+        ],
+        "usedIn": []
+      },
+      {
+        "id": "feeling_happy",
+        "file": "/root/dreamX/doc/bgm/happy/feeling_happy.mp3",
+        "source": "mixkit",
+        "sourceId": 5,
+        "title": "Feeling Happy",
+        "artist": "Ahjay Stelino",
+        "duration": 148.0,
+        "mood": [
+          "欢快",
+          "可爱",
+          "害羞"
+        ],
+        "tags": [
+          "happy",
+          "carefree",
+          "acoustic"
+        ],
+        "genre": "Children/Pop",
+        "waveform": {
+          "avgRms": -16.4,
+          "climaxRanges": [],
+          "bpm": null
+        },
+        "memeMatch": [
+          "害羞猫",
+          "胖狸猫"
+        ],
+        "usedIn": []
+      },
+      {
+        "id": "upbeat_jazz",
+        "file": "/root/dreamX/doc/bgm/jazz/upbeat_jazz.mp3",
+        "source": "mixkit",
+        "sourceId": 644,
+        "title": "Upbeat Jazz",
+        "artist": "Francisco Alvear",
+        "duration": 110.2,
+        "mood": [
+          "吐槽",
+          "震惊",
+          "搞笑"
+        ],
+        "tags": [
+          "jazz",
+          "humorous",
+          "lively",
+          "news"
+        ],
+        "genre": "Jazz",
+        "waveform": {
+          "avgRms": -15.5,
+          "climaxRanges": [
+            {
+              "start": 35,
+              "end": 40,
+              "intensity": 0.71
+            },
+            {
+              "start": 50,
+              "end": 53,
+              "intensity": 0.73
+            },
+            {
+              "start": 60,
+              "end": 64,
+              "intensity": 0.74
+            },
+            {
+              "start": 83,
+              "end": 86,
+              "intensity": 0.66
+            }
+          ],
+          "bpm": null
+        },
+        "memeMatch": [
+          "质问猫",
+          "震惊猫"
+        ],
+        "usedIn": []
+      }
+    ]
+  },
+  "memes": {
+    "sources": {
+      "giphy": {
+        "url": "https://giphy.com/",
+        "searchPattern": "https://giphy.com/search/{keyword}",
+        "license": "Free to use with attribution",
+        "searchable": true,
+        "downloadMethod": "agent-browser抓取img链接，用200_s.gif静态帧下载（小文件）或200.gif缩略图"
+      }
+    },
+    "library": [
+      {
+        "id": "shocked_1",
+        "file": "/root/dreamX/doc/memes/shocked/shocked_1.gif",
+        "source": "giphy",
+        "character": null,
+        "characterIp": null,
+        "memeName": "震惊反应",
+        "memeDesc": "人物震惊的反应表情",
+        "text": null,
+        "mood": [
+          "震惊",
+          "离谱"
+        ],
+        "tags": [
+          "shocked",
+          "surprised",
+          "reaction"
+        ],
+        "format": "gif",
+        "usedIn": []
+      },
+      {
+        "id": "shocked_2",
+        "file": "/root/dreamX/doc/memes/shocked/shocked_2.gif",
+        "source": "giphy",
+        "character": null,
+        "characterIp": null,
+        "memeName": "震惊反应",
+        "memeDesc": "人物不敢相信的表情",
+        "text": null,
+        "mood": [
+          "震惊",
+          "离谱"
+        ],
+        "tags": [
+          "shocked",
+          "surprised"
+        ],
+        "format": "gif",
+        "usedIn": []
+      },
+      {
+        "id": "shocked_3",
+        "file": "/root/dreamX/doc/memes/shocked/shocked_3.gif",
+        "source": "giphy",
+        "character": null,
+        "characterIp": null,
+        "memeName": "无语反应",
+        "memeDesc": "人物无语的表情",
+        "text": null,
+        "mood": [
+          "震惊",
+          "无语"
+        ],
+        "tags": [
+          "shocked",
+          "speechless"
+        ],
+        "format": "gif",
+        "usedIn": []
+      },
+      {
+        "id": "shocked_4",
+        "file": "/root/dreamX/doc/memes/shocked/shocked_4.gif",
+        "source": "giphy",
+        "character": null,
+        "characterIp": null,
+        "memeName": "惊讶反应",
+        "memeDesc": "人物惊讶的表情",
+        "text": null,
+        "mood": [
+          "震惊"
+        ],
+        "tags": [
+          "shocked",
+          "surprised"
+        ],
+        "format": "gif",
+        "usedIn": []
+      },
+      {
+        "id": "tired_1",
+        "file": "/root/dreamX/doc/memes/tired/tired_1.gif",
+        "source": "giphy",
+        "character": null,
+        "characterIp": null,
+        "memeName": "加班累",
+        "memeDesc": "疲惫的工作状态",
+        "text": null,
+        "mood": [
+          "委屈",
+          "吐槽"
+        ],
+        "tags": [
+          "tired",
+          "work",
+          "overtime"
+        ],
+        "format": "gif",
+        "usedIn": []
+      },
+      {
+        "id": "tired_2",
+        "file": "/root/dreamX/doc/memes/tired/tired_2.gif",
+        "source": "giphy",
+        "character": null,
+        "characterIp": null,
+        "memeName": "加班累",
+        "memeDesc": "累到不行的表情",
+        "text": null,
+        "mood": [
+          "委屈",
+          "吐槽"
+        ],
+        "tags": [
+          "tired",
+          "exhausted",
+          "work"
+        ],
+        "format": "gif",
+        "usedIn": []
+      },
+      {
+        "id": "tired_3",
+        "file": "/root/dreamX/doc/memes/tired/tired_3.gif",
+        "source": "giphy",
+        "character": null,
+        "characterIp": null,
+        "memeName": "加班累",
+        "memeDesc": "工作疲惫的状态",
+        "text": null,
+        "mood": [
+          "委屈",
+          "无语"
+        ],
+        "tags": [
+          "tired",
+          "work",
+          "overtime"
+        ],
+        "format": "gif",
+        "usedIn": []
+      }
+    ]
+  }
+}
