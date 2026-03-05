@@ -59,23 +59,23 @@ if docker ps -a | grep -q dreamx-video; then
     docker rm dreamx-video 2>/dev/null || true
 fi
 
-# 启动新容器
+# 启动新容器（不挂载 doc 目录，使用镜像内的素材库）
 echo ""
 echo "启动 Docker 容器..."
 docker run -d \
   --name dreamx-video \
-  -p 8080:8080 \
+  -p 8081:17026 \
   -e COS_APP_ID=$COS_APP_ID \
   -e COS_SECRET_ID=$COS_SECRET_ID \
   -e COS_SECRET_KEY=$COS_SECRET_KEY \
   -e COS_REGION=$COS_REGION \
   -e COS_BUCKET=$COS_BUCKET \
-  -v $(pwd)/doc:/app/doc \
-  -v $(pwd)/tmp:/app/tmp \
   dreamx-video:latest
 
 if [ $? -eq 0 ]; then
     echo "✅ Docker 容器启动成功"
+    echo "📦 镜像已包含完整素材库（756 个表情包 + 76 个 BGM）"
+    echo "⚠️  不要挂载 /app/doc 目录，否则会覆盖镜像内的素材"
 else
     echo "❌ Docker 容器启动失败"
     exit 1

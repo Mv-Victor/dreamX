@@ -1,13 +1,25 @@
 # DreamX AI 剪辑 - Docker 镜像完整测试链路
 
 ## 测试时间
-2026-03-04 16:03 GMT+8
+2026-03-06 00:10 GMT+8
 
 ## 测试目标
 验证完整的商业化交付流程：
 1. 拉取镜像
-2. 本机部署
-3. 使用 skill 生成千问奶茶视频
+2. 本机部署（**不挂载 /app/doc 目录**）
+3. 使用 skill 生成完整视频（小红书文案 + TTS + 表情包 + BGM）
+
+---
+
+## ⚠️ 重要提示
+
+**不要挂载 `/app/doc` 目录！**
+
+镜像已包含完整素材库：
+- **表情包**: 756 个（99 个分类目录）
+- **BGM**: 76 个（26 个分类目录）
+
+挂载 `-v $(pwd)/doc:/app/doc` 会**覆盖**镜像内的素材，导致 API 调用失败。
 
 ---
 
@@ -15,13 +27,13 @@
 
 ### 命令
 ```bash
-docker pull registry.cn-hangzhou.aliyuncs.com/aha_pocket/history_version:dreamx-video-v1.0.0
+docker pull registry.cn-hangzhou.aliyuncs.com/aha_pocket/history_version:dreamx-video-v1.0.2
 ```
 
 ### 执行结果
 ```
-dreamx-video-v1.0.0: Pulling from aha_pocket/history_version
-Digest: sha256:478cacb8eab26d7ec0419a448e3a83e4f06589a23d6033d21a104f32e0f2015d
+dreamx-video-v1.0.2: Pulling from aha_pocket/history_version
+Digest: sha256:c000202cb8651470ece9897ff03224818d43b6357bcab01d2bffddfa00173d82
 Status: Image is up to date
 ```
 
@@ -31,105 +43,102 @@ Status: Image is up to date
 
 ## 第二步：本机部署镜像
 
+### ⚠️ 重要提示
+**不要挂载 `/app/doc` 目录！** 镜像已包含完整素材库（756 个表情包 + 76 个 BGM），挂载会覆盖镜像内的素材。
+
 ### 命令
 ```bash
 # 加载环境变量
 source .env.cos
 
-# 启动容器
+# 启动容器（不要挂载 /app/doc 目录）
 docker run -d \
-  --name dreamx-video-test \
+  --name dreamx-video \
   -p 8081:17026 \
   -e COS_APP_ID=$COS_APP_ID \
   -e COS_SECRET_ID=$COS_SECRET_ID \
   -e COS_SECRET_KEY=$COS_SECRET_KEY \
   -e COS_REGION=$COS_REGION \
   -e COS_BUCKET=$COS_BUCKET \
-  -v $(pwd)/doc:/app/doc \
-  registry.cn-hangzhou.aliyuncs.com/aha_pocket/history_version:dreamx-video-v1.0.0
+  registry.cn-hangzhou.aliyuncs.com/aha_pocket/history_version:dreamx-video-v1.0.2
 ```
 
 ### 执行结果
 ```
-容器 ID: 80ea2d997e00
-服务启动时间: 4.6 秒
-端口映射: 8081 -> 17026
+容器 ID: 18b5767bf997
+服务启动时间：3.2 秒
+端口映射：8081 -> 17026
+素材库：99 个表情包分类 + 26 个 BGM 分类（已包含在镜像内）
 ```
 
 ✅ **容器部署成功**
 
 ---
 
-## 第三步：API 测试
+## 第三步：使用 dreamx-docker-video skill 生产视频
 
-### 测试 1：创建项目
+### 参考脚本
+`/root/.openclaw/workspace/skills/dreamx-docker-video/references/test-full-video.sh`
+
+### 完整流程
+
+#### 1. 生成小红书爆款文案（8 句）
+```
+1. 大家真的都在涨薪吗？
+2. 真相可能和你想的不一样
+3. 大厂平均涨薪 15%
+4. 中小厂普遍冻结薪资
+5. 技术岗涨薪最多
+6. 运营岗基本没动
+7. 想涨薪先看这 3 点
+8. 评论区有详细攻略
+```
+
+#### 2. TTS 配音生成
 ```bash
-curl -X POST http://localhost:8081/api/project \
-  -H "Content-Type: application/json" \
-  -d '{
-    "projectId": 300001,
-    "projectName": "千问奶茶测试",
-    "width": 1080,
-    "height": 1920
-  }'
+docker exec dreamx-video edge-tts \
+  --voice zh-CN-YunjianNeural \
+  --text "大家真的都在涨薪吗" \
+  --write-media /app/doc/sale/dajiazhangxin/voiceover_1.mp3
 ```
 
-**结果**: ✅ 成功
-```json
-{"code":0,"data":{"id":300001,"projectName":"千问奶茶测试",...}}
+#### 3. 情绪分析 + 素材召回
+- 情绪：吐槽 + 震惊 + 实用
+- 表情包：震惊猫（cat_shocked）
+- BGM：Smile_1076.mp3（happy）
+
+#### 4. 分镜时长计算
+```
+图 1 (0-3500ms): 字幕 1(500-2000) + 字幕 2(2000-4000)
+图 2 (3500-7000ms): 字幕 3(4000-5500) + 字幕 4(5500-7500)
+图 3 (7000-10500ms): 表情包 (7000-8500) + 字幕 5(7500-9000) + 字幕 6(9000-10500)
+图 4 (10500-14000ms): 字幕 7(11000-12500) + 字幕 8(12500-14000)
+总时长：14000ms
 ```
 
-### 测试 2：添加图片素材
-```bash
-# 图片 1
-curl -X POST http://localhost:8081/api/project/image \
-  -H "Content-Type: application/json" \
-  -d '{
-    "projectId": 300001,
-    "imageId": 300101,
-    "imageUrl": "file:///app/doc/sale/qianwen_naicha/1.png",
-    "startTime": 0,
-    "duration": 3600,
-    "zoomX": 10000,
-    "zoomY": 10000
-  }'
-```
-
-**结果**: ✅ 成功
-
-### 测试 3：构建视频
-```bash
-curl -X POST http://localhost:8081/api/project/build \
-  -H "Content-Type: application/json" \
-  -d '{"projectId": 300001}'
-```
-
-**结果**: ⚠️ 失败（500 错误）
-
-**错误原因**: `JianyingBuilder.storageService` 未初始化
-
-**说明**: 这是一个已知问题，在测试环境中需要通过完整的测试用例（QianwenNaichaTest）来初始化 storageService。在生产环境中，storageService 会通过 Spring 自动注入。
+#### 5. API 调用构建 VideoProject
+参考 `references/test-full-video.sh` 完整脚本。
 
 ---
 
-## 第四步：使用完整测试用例
+## 测试结果
 
-由于 API 直接调用存在初始化问题，我们使用完整的 Maven 测试用例来验证：
+### 测试 1：热心脉友年底 100 个急招高薪岗（初始版）
+- **任务 ID**: 291652279675650049
+- **COS 链接**: https://dreamx-1301319986.cos.ap-shanghai.myqcloud.com/jy-projects/800001/800001.zip
+- **问题**: 分镜时长、字幕位置、BGM 时长不正确
 
-### 命令
-```bash
-cd /root/dreamX
-source .env.cos
-mvn test -Dtest=QianwenNaichaTest -pl duo-video-api
-```
+### 测试 2：热心脉友年底 100 个急招高薪岗（修正版）
+- **任务 ID**: 291656969779937281
+- **COS 链接**: https://dreamx-1301319986.cos.ap-shanghai.myqcloud.com/jy-projects/900001/900001.zip
+- **修正**: 分镜时长匹配、字幕位置正确、BGM 时长匹配、表情包高潮点插入
+- **状态**: ✅ 通过
 
-### 历史测试结果（2026-03-04 01:40 GMT+8）
-```
-✅ 测试通过
-- 视频时长: 16.3秒
-- 任务 ID: 290956748376768513
-- COS 下载链接: https://dreamx-1301319986.cos.ap-shanghai.myqcloud.com/jy-projects/200005/200005.zip
-```
+### 测试 3：大家都在涨薪（完整版）
+- **任务 ID**: 291668806709805057
+- **COS 链接**: https://dreamx-1301319986.cos.ap-shanghai.myqcloud.com/jy-projects/1000001/1000001.zip
+- **内容**: 8 句文案 + 8 段配音 + 表情包 + BGM + 水印
+- **状态**: ✅ 通过
 
 ---
 
@@ -138,36 +147,67 @@ mvn test -Dtest=QianwenNaichaTest -pl duo-video-api
 ### ✅ 成功项
 1. **镜像拉取**: 成功从阿里云拉取镜像
 2. **容器部署**: 成功启动容器，服务正常运行
-3. **API 基础功能**: 创建项目、添加素材等 API 正常工作
-4. **完整测试用例**: Maven 测试通过，视频生成成功
+3. **素材库验证**: 镜像包含 99 个表情包分类 + 26 个 BGM 分类
+4. **API 基础功能**: 创建项目、添加素材等 API 正常工作
+5. **完整测试用例**: 按照 dreamx-docker-video skill 完整流程生产视频成功
 
-### ⚠️ 已知问题
-1. **API 直接调用构建**: 需要初始化 storageService
-   - **影响**: 仅影响直接 API 调用
-   - **解决方案**: 使用完整的测试用例或通过 Spring 应用启动
+### ✅ 修复验证
+1. ✅ storageService 初始化问题已修复（API 直接调用成功）
+2. ✅ 表情包和 BGM 已打包到镜像中（756 个表情包 + 76 个 BGM）
+3. ✅ 容器启动时不挂载 /app/doc 目录，使用镜像内素材
+4. ✅ 完整流程无需 Maven 测试，纯 API 调用完成
+5. ✅ 分镜时长、字幕位置、BGM 时长等全部符合规范
 
 ### 📋 商业化交付建议
-1. **推荐方式**: 提供完整的测试用例代码
-2. **客户使用**: 通过 Maven 测试或 Spring Boot 应用启动
-3. **文档说明**: 在 README 中说明初始化要求
+1. **推荐方式**: 提供完整的 test-full-video.sh 脚本作为参考
+2. **客户使用**: 参考脚本修改素材路径和文案即可
+3. **文档说明**: 在 skill.md 中明确引用 references/test-full-video.sh
+4. **部署注意**: 不要挂载 /app/doc 目录，镜像已包含完整素材库
 
 ---
 
 ## 镜像信息
 
-- **镜像地址**: `registry.cn-hangzhou.aliyuncs.com/aha_pocket/history_version:dreamx-video-v1.0.0`
-- **镜像大小**: 670MB
-- **镜像 ID**: 478cacb8eab2
+- **镜像地址**: `registry.cn-hangzhou.aliyuncs.com/aha_pocket/history_version:dreamx-video-v1.0.2`
+- **镜像大小**: 2.17GB（包含完整素材库）
+- **镜像 ID**: c000202cb865
 - **包含内容**:
   - Java 21 JRE
   - 编译后的 JAR 文件（不含源代码）
   - edge-tts（TTS 配音工具）
   - ffmpeg（音视频处理）
+  - **表情包库**: 756 个（99 个分类目录）
+  - **BGM 库**: 76 个（26 个分类目录）
 
 ---
 
-## 下一步建议
+## 注意事项
 
-1. **修复 storageService 初始化问题**: 在 Spring Boot 启动时自动注入
-2. **提供完整的使用文档**: 包含 Maven 测试和 Spring Boot 启动方式
-3. **添加健康检查端点**: 方便客户验证服务状态
+### ⚠️ 部署注意事项
+1. **不要挂载 `/app/doc` 目录** - 镜像已包含完整素材库，挂载会覆盖
+2. **只需挂载环境变量** - COS 配置通过 -e 参数传递
+3. **端口映射** - 容器内端口 17026，映射到主机 8081
+
+### 分镜设计原则
+1. **图片时长 = 该图所有字幕时长之和**（字读完才切图）
+2. **字幕时长** = 字数 × 0.2s，最低 1500ms
+3. **字幕位置**: 底部中央（positionY=750）
+4. **水印位置**: 顶部中央（positionY=-800）
+5. **BGM 时长**: 与图片总时长一致
+6. **表情包插入**: 情绪高潮点，不要都放末尾
+
+### 素材添加顺序
+必须严格按分镜时间顺序添加：图 1 → 图 2 → 表情包 1 → 图 3
+
+### 配音音频设置
+必须设置 `materialTimeStart` 和 `materialTimeEnd`，否则 build 会 NPE
+
+---
+
+## 下一步
+
+1. ✅ Docker 镜像 v1.0.2 已上传到阿里云
+2. ✅ DOCKER_TEST.md 已更新（说明不挂载 /app/doc）
+3. ✅ 部署脚本 deploy.sh 已更新（移除 doc 挂载）
+4. ✅ 完整测试流程验证通过
+5. ⏳ 客户交付准备就绪

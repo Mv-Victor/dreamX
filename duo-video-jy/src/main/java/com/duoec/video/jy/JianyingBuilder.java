@@ -5,6 +5,8 @@ import com.duoec.video.jy.builder.JianyingScriptBuilder;
 import com.duoec.video.jy.dto.info.JianYingProjectInfo;
 import com.duoec.video.jy.service.StorageService;
 import com.duoec.video.project.VideoProject;
+import jakarta.annotation.PostConstruct;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
@@ -13,6 +15,14 @@ import java.util.Optional;
 @Component
 public class JianyingBuilder {
     public static StorageService storageService;
+
+    @Autowired
+    private StorageService injectedStorageService;
+
+    @PostConstruct
+    public void init() {
+        storageService = injectedStorageService;
+    }
 
     /**
      * 构建剪映工程

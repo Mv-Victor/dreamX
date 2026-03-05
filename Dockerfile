@@ -34,8 +34,11 @@ RUN apk add --no-cache python3 py3-pip ffmpeg && \
 # 复制编译产物
 COPY --from=builder /build/duo-video-api/target/duo-video-api-*.jar app.jar
 
-# 创建素材目录
-RUN mkdir -p /app/doc/sale /app/doc/memes /app/doc/bgm /app/tmp/jy-drafts
+# 复制素材文件（表情包、BGM、营销素材）
+COPY doc/ /app/doc/
+
+# 创建临时目录
+RUN mkdir -p /app/tmp/jy-drafts
 
 # 暴露端口
 EXPOSE 8080
