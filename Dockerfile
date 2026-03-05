@@ -29,7 +29,7 @@ WORKDIR /app
 
 # 安装 edge-tts（TTS 配音工具）
 RUN apk add --no-cache python3 py3-pip ffmpeg && \
-    pip3 install --no-cache-dir edge-tts
+    pip3 install --no-cache-dir --break-system-packages edge-tts
 
 # 复制编译产物
 COPY --from=builder /build/duo-video-api/target/duo-video-api-*.jar app.jar
